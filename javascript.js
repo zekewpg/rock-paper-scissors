@@ -17,13 +17,6 @@
 
 // 7. game()
 
- // TODO - find a way to differentiate between '' entry and cancel/escape when
-    // checking for valid response from player
-    // add an array that stores game results and display at the end - if asked
-
-// TODO - change what playRPS returns, so I have easy access to results and message. Maybe return an array?
-// ie arrGameResults['1', 'Player Won', 'rock', 'scissors']??
-
 // Function to play a single round of RPS // requires two inputs, playerChoice and computerChoice
 // returns each players choices and the winner
 function playRPS(playerChoice, computerChoice) {
@@ -121,8 +114,15 @@ function getPlayerChoice() {
     let choice = prompt('Enter choice for round:');
     // returns text as entered in lower case, but more importantly
     // returns undefined if escape/cancel - can use as a way to exit game loop
+    // add check here for '' vice null? if '' - return random chioce
+    // if null return undefined?
+    if (choice === '') {
+        console.log('No choice made, selecting randomly');
+        return toLowerCase(getComputerChoice());
+    } else {
     return toLowerCase(choice);
     }
+}
 //game loop that prompts for rounds of RPS until someone wins 3 games
 function game() {
 
@@ -152,6 +152,7 @@ function game() {
         while (validEntry === false) {
             playerChoice = getPlayerChoice();
             // check here for null so we can exit out?
+            console.log(playerChoice);
             if (playerChoice === undefined) {
                 // exit routine, player hit escape/cancel
                 console.log('Player is exiting the game. See you later.');
