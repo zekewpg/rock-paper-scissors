@@ -3,6 +3,7 @@
 
 
 //list of functions:
+
 // 1. playRPS()
 
 // 2. getComputerChoice()
@@ -11,15 +12,13 @@
 
 // 4. isValidChoice()
 
-// 5. toLowerCase()
+// 5. getPlayerChoice()
 
-// 6. getPlayerChoice()
+// 6. game()
 
-// 7. game()
-
-// Function to play a single round of RPS // requires two inputs, playerChoice and computerChoice
-// returns each players choices and the winner
 function playRPS(playerChoice, computerChoice) {
+// Function to play a single round of RPS // requires two inputs, playerChoice and computerChoice
+// rtns array of values: mbr reprensting win/lose/tie, info string, player choice, and cpu choice
 
     // filter for invalid values and return an error message if that is the case
     if (playerChoice && computerChoice) {
@@ -28,7 +27,6 @@ function playRPS(playerChoice, computerChoice) {
         const choiceArray = ['rock','paper','scissors'];
         if (choiceArray.includes(playerChoice) && choiceArray.includes(computerChoice)) {
             // two valid entries have been provided. Now we need to select winner and return info/winner
-            // check to see if player won
             // blatently stolen from stackoverflow - love the logic
             const weapons = {
                 rock: {weakTo: 'paper', strongTo: 'scissors'},
@@ -65,10 +63,9 @@ function playRPS(playerChoice, computerChoice) {
 }
 
 function getComputerChoice() {
-    //randomly return the computers choice of rock, paper, or scissors
-    // create integer variable and randomly assign an integer value of between 1 and 3 to it
+    // Assign computerGuess a random number between one and three and
+    //return Rock, Paper, or Scissors accordingly
     let computerGuess = getRandomInteger(3);
-    //based on random value returned between 1 and 3, return Rock, Paper, or Scissors
     switch (computerGuess) {
         case 1:
             return 'rock';
@@ -80,19 +77,18 @@ function getComputerChoice() {
 }
 
 function getRandomInteger(upperBound) {
-    // given the top value provided by maxInteger, return a random integer
-    //between 1 and maxInteger
-
-    return Math.floor(Math.random()*upperBound+1);
+    // given the top value provided by upperBound, return a random number
+    //between 1 and upperBound
+    return ~~(Math.random()*upperBound+1);
 }
 
+function isValidChoice(choice) {
 // given the provided parameter, check if it is a valid one for rock paper scissors
 // and return true or false accordingly
-function isValidChoice(choice) {
     if (choice) {
         // filter for null/undefined?
         let rpsArray = ['rock','paper','scissors'];
-        if (rpsArray.indexOf(toLowerCase(choice)) != -1) {
+        if (rpsArray.indexOf(choice.toLowerCase()) != -1) {
             return true;
         } else {
             return false;
@@ -101,35 +97,27 @@ function isValidChoice(choice) {
     }
 }
 
-// convert provided paramter into lowercase
-function toLowerCase(input) {
-    if (input) {
-        return String(input).toLowerCase();
-    }
-    // if undefined value, return undefined and do not throw error
-}
-
-//having scope problems becasue i'm a newb! let's try a function that returns the players choice
 function getPlayerChoice() {
     let choice = prompt('Enter choice for round:');
-    // returns text as entered in lower case, but more importantly
     // returns undefined if escape/cancel - can use as a way to exit game loop
     // add check here for '' vice null? if '' - return random chioce
-    // if null return undefined?
     if (choice === '') {
         console.log('No choice made, selecting randomly');
-        return toLowerCase(getComputerChoice());
-    } else {
-    return toLowerCase(choice);
+        return getComputerChoice().toLowerCase();
+    } else if (choice === null) {
+        return 'undefined';
+    } else
+    return choice.toLowerCase();
     }
-}
+
 //game loop that prompts for rounds of RPS until someone wins 3 games
 function game() {
 
-    // set up and play 5 rounds of RPS and report the results at end or if player terminates
+    // set up and play 5 rounds of RPS  or until someone wins three and
+    // report the results at end or if player terminates
     let playerWins = 0;
     let computerWins = 0;
-    let isWinner = false;
+    //let isWinner = false;
     let validEntry = false;
     let playerChoice;
     let rounds = 1;
@@ -139,21 +127,16 @@ function game() {
     console.log('Welcome to Rock Paper Scissors');
 
     //ask if user wants to play. true value = play false = no
-    if (confirm('Do you want to play a round (best of 5) with me?')) {
-
+    if (confirm('Do you want to play a round of Rock Paper Scissors with me? First one to get three wins is the victor.')) {
         // user wants to play
-        // we can exit early if someone wins three in a row so - do that and keep the
-        // latter two variables in place
         while (playerWins < 3 && computerWins < 3) {
-        // if we have less than 5 rounds and player and computer
         // have less than 3 wins than we need to play a round of RPS
-
         // need a valid entry before we can do a round - get player choice
         while (validEntry === false) {
             playerChoice = getPlayerChoice();
             // check here for null so we can exit out?
             console.log(playerChoice);
-            if (playerChoice === undefined) {
+            if (playerChoice === 'undefined') {
                 // exit routine, player hit escape/cancel
                 console.log('Player is exiting the game. See you later.');
                 return;
@@ -219,18 +202,21 @@ function game() {
         if (playerWins === 3) {
             //player won!
             console.log('Congratulations, you won!');
-            console.log('Game Stats: Game lasted ' + parseInt(rounds-1) + ' rounds:');
-            for (const item in gameStats) {
-                console.log(gameStats[item]);
-            }
         } else {
             //computer won
             console.log('Sorry, you lost!');
-            console.log('Game Stats: Game lasted ' + parseInt(rounds-1) + ' rounds:');
-            for (const item in gameStats) {
-                console.log(gameStats[item]);
-        }
     }
 
-
+        // can we prompt for stats here?
+        if(confirm('Do you want game stats?')) {
+            // give game stats
+             console.log('Game Stats: Game lasted ' + parseInt(rounds-1) + ' rounds:');
+             for (const item in gameStats) {
+                console.log(gameStats[item]);
+            } 
+          
+        } else {
+            // no game stats
+            console.log('Okay, goodbye.');
+        }
 }
